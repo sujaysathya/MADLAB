@@ -1,105 +1,43 @@
-package com.example.sms;
+package com.example.sdcard;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
-import android.app.TimePickerDialog; import android.media.Ringtone; import android.media.RingtoneManager; import android.os.Build;
-import   android.os.Bundle; import android.os.Handler; import   android.os.Looper; import android.provider.Settings; import android.util.Log;
-import   android.view.View; import android.widget.Button; import android.widget.TextClock; import android.widget.TextView; import android.widget.TimePicker;
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.provider.AlarmClock;
+import android.view.View;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity; import java.util.Calendar;
-import java.util.Timer; import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicInteger; public class MainActivity extends AppCompatActivity {
-    TimePicker alarmtime;
-    TextClock currtime;
-    TextView t;
-    Button setAlarm,cancel,snz;
+public class MainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        currtime = findViewById(R.id.currTime);
-        setAlarm = findViewById(R.id.button);
-        alarmtime = findViewById(R.id.timePicker);
-        cancel = findViewById(R.id.cancel);
-        t = findViewById(R.id.text);
-        snz= findViewById(R.id.snooze);
-        final AtomicInteger value = new AtomicInteger(0);
-        final AtomicInteger stop = new AtomicInteger(0);
-        final Timer timer = new Timer();
-        final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(),RingtoneManager.getDefault Uri(RingtoneManager.TYPE_ALARM));
-        setAlarm.setOnClickListener(new View.OnClickListener() {
- 	@Override
+    }
 
+    public void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.SET_ALARM}, 1);
+    }
 
-            alarmtime.setVisibility(View.VISIBLE);
- 	stop.getAndSet(0);
- 	timer.scheduleAtFixedRate(new TimerTask() {
-                @RequiresApi(api = Build.VERSION_CODES.M)
-                @Override
-                public void run() {
+    public void onSetBtnClick(View v) {
+        requestPermission();
 
-                    Log.i("here1",currtime.getText().toString());
-                    Log.i("here2",AlarmTime());
-
-                    if(currtime.getText().toString().equals(AlarmTime())&&stop.get()==0){
-                        Log.i("here3","Works"); r.play();
-                        runOnUiThread(new Runnable() { @Override
-                        public void run() { t.setText("ALARM IS RINGING");
-                            snz.setVisibility(View.VISIBLE);
-                        }
-                        });
-                    }
-                    else{
-                        runOnUiThread(new Runnable() { @Override
-                        public void run() { t.setText("");
-                            snz.setVisibility(View.INVISIBLE);
-                        }
-                        });
-                        r.stop();
-                    }
-                }
-            },0,1000); //you want the delay to be zero because the task should be immediate and you want to check each second
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.SET_ALARM) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Permission not granted!", Toast.LENGTH_LONG).show();
+            return;
         }
-    });
-cancel.setOnClickListener(new View.OnClickListener() { @Override
-        public void onClick(View view) { stop.getAndSet(1);
-        }
-    });
 
- 	snz.setOnClickListener(new View.OnClickListener() {
-        @RequiresApi(api = Build.VERSION_CODES.M)
-        @Override
-        public void onClick(View v) {
-            Integer alarmMin = alarmtime.getMinute();
-
-            alarmtime.setMinute(alarmMin+5);
-
-
-        }
-    });
-}
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public String AlarmTime(){
-        Integer alarmHour = alarmtime.getHour();
-        Integer alarmMin = alarmtime.getMinute();
-
-        String alarm_time,end="AM",min,hr;
-        if (alarmHour>=12){
-            end = "PM";
-            if (alarmHour!=12)
-                alarmHour-=12;
-        }
-        if (alarmMin<10)
-            min = "0"+String.valueOf(alarmMin);
-        else{
-            min = String.valueOf(alarmMin);
-        }
-        if (alarmHour==0)
-            hr="12";
-        else{
-            hr = String.valueOf(alarmHour);
-        }
-        alarm_time = hr+":"+min+" "+end;
-        return alarm_time;
+        TimePicker timePicker = findViewById(R.id.timePicker);
+        Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM)
+                .putExtra(AlarmClock.EXTRA_HOUR, timePicker.getHour())
+                .putExtra(AlarmClock.EXTRA_MINUTES, timePicker.getMinute())
+                .putExtra(AlarmClock.EXTRA_MESSAGE, "Alarm created by AlarmApp")
+                .putExtra(AlarmClock.EXTRA_SKIP_UI, true);
+        startActivity(intent);
+        Toast.makeText(this, "Set the alarm!", Toast.LENGTH_LONG).show();
     }
 }
-
