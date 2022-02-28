@@ -14,7 +14,7 @@
 create assests folder like new->folder->assests folder and keep the html file inside it<br>
 add this to android manifest to access google.com \<uses-permission android:name="android.permission.INTERNET" /><br><br>
 <b>for alarm add to android manifest</b><br>
-    \<uses-permission android:name="com.android.alarm.permission.SET_ALARM" /> <br>
+    \<uses-permission android:name="com.android.alarm.permission.SET_ALARM" /> <br><br><br>
   <b>for menu driven</b><br>
 create assests folder like new->folder->assests folder and keep the html file inside it
 put string.html under valuse which is under res
