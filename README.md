@@ -12,3 +12,7 @@ for sms add to android manifest<br>
 
 for web page<br>
 create assests folder like new->folder->assests folder and keep the html file inside it
+
+for alarm add to android manifest<br>
+    \<uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+
