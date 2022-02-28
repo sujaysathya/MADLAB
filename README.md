@@ -15,4 +15,6 @@ create assests folder like new->folder->assests folder and keep the html file in
 
 for alarm add to android manifest<br>
     \<uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
-
+for menu driven<br>
+create assests folder like new->folder->assests folder and keep the html file inside it
+put string.html under valuse which is under res
